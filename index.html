@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetallPro — Поставки металлопроката</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --bg2: #161616;
+    --bg3: #1e1e1e;
+    --border: #2a2a2a;
+    --orange: #e8610a;
+    --orange2: #ff7d2e;
+    --gold: #c8922a;
+    --text: #f0ede8;
+    --muted: #888;
+    --white: #fff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Golos Text', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    height: 68px;
+    background: rgba(14,14,14,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+  .logo span { color: var(--orange); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--orange);
+    color: #fff !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--orange2) !important; color: #fff !important; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 5% 80px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 1024px) {
+    .hero {
+      min-height: unset;
+      padding: 100px 5% 60px;
+      align-items: flex-start;
+    }
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 70% 50%, rgba(232,97,10,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,146,42,0.08) 0%, transparent 60%),
+      linear-gradient(180deg, #0e0e0e 0%, #111 100%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,97,10,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,97,10,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at 70% 50%, black 20%, transparent 70%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,97,10,0.15);
+    border: 1px solid rgba(232,97,10,0.3);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    color: var(--orange2);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--orange);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--orange);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.9rem 1.8rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(37,211,102,0.25);
+  }
+  .btn-wa:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(37,211,102,0.35);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.9rem 1.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--orange);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* SECTION COMMONS */
+  section { position: relative; z-index: 1; }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 1px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 540px;
+  }
+
+  /* CATALOG */
+  #catalog {
+    padding: 100px 5%;
+    background: var(--bg2);
+  }
+
+  .catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .catalog-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--bg3);
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    padding: 0.5rem 1.2rem;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Golos Text', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--orange);
+    color: #fff;
+  }
+
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .metal-card {
+    background: var(--bg);
+    padding: 2rem;
+    transition: background 0.25s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .metal-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+  .metal-card:hover { background: var(--bg3); }
+  .metal-card:hover::before { transform: scaleX(1); }
+
+  .metal-icon {
+    width: 64px; height: 64px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .metal-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+
+  .metal-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .metal-tag {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* GALLERY */
+  #gallery {
+    padding: 100px 5%;
+  }
+
+  .gallery-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 200px 200px;
+    gap: 12px;
+  }
+
+  .gal-item {
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+  }
+
+  .gal-item:nth-child(1) { grid-column: span 4; grid-row: span 2; }
+  .gal-item:nth-child(2) { grid-column: span 3; }
+  .gal-item:nth-child(3) { grid-column: span 5; }
+  .gal-item:nth-child(4) { grid-column: span 5; }
+  .gal-item:nth-child(5) { grid-column: span 3; }
+
+  .gal-inner {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* SVG metal illustrations */
+  .metal-visual {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .gal-label {
+    position: relative;
+    z-index: 2;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.9);
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  /* Copper visual */
+  .vis-copper { background: linear-gradient(135deg, #8B4513 0%, #B5651D 25%, #CD853F 50%, #A0522D 75%, #8B4513 100%); }
+  .vis-aluminum { background: linear-gradient(135deg, #9e9e9e 0%, #e0e0e0 30%, #bdbdbd 60%, #757575 100%); }
+  .vis-brass { background: linear-gradient(135deg, #b8860b 0%, #ffd700 30%, #daa520 60%, #b8860b 100%); }
+  .vis-steel { background: linear-gradient(135deg, #1a1a2e 0%, #3a3a5c 30%, #4a4a7a 50%, #2a2a4a 75%, #1a1a2e 100%); }
+  .vis-pipe { background: linear-gradient(135deg, #212121 0%, #424242 40%, #616161 60%, #212121 100%); }
+
+  .metal-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.2) 100%);
+  }
+
+  .metal-lines {
+    position: absolute;
+    inset: 0;
+    background-repeating-linear-gradient: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 8px,
+      rgba(255,255,255,0.03) 8px,
+      rgba(255,255,255,0.03) 9px
+    );
+  }
+
+  /* ADVANTAGES */
+  #advantages {
+    padding: 100px 5%;
+    background: var(--bg2);
+  }
+
+  .adv-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+
+  .adv-card {
+    background: var(--bg);
+    padding: 2.5rem 2rem;
+  }
+
+  .adv-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 1.25rem;
+    display: block;
+  }
+
+  .adv-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+
+  .adv-text { font-size: 0.9rem; color: var(--muted); }
+
+  /* CTA SECTION */
+  #contact {
+    padding: 120px 5%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(232,97,10,0.08) 0%, transparent 70%);
+  }
+
+  .cta-box {
+    position: relative;
+    z-index: 2;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+
+  .cta-title span { color: var(--orange); }
+
+  .cta-sub {
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-size: 1.05rem;
+  }
+
+  .wa-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .wa-form textarea {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 1rem 1.25rem;
+    font-family: 'Golos Text', sans-serif;
+    font-size: 0.95rem;
+    resize: none;
+    height: 110px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .wa-form textarea:focus { border-color: var(--orange); }
+  .wa-form textarea::placeholder { color: var(--muted); }
+
+  .btn-wa-big {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: #25D366;
+    color: #fff;
+    text-decoration: none;
+    padding: 1.1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    font-family: 'Golos Text', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(37,211,102,0.2);
+  }
+  .btn-wa-big:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 40px rgba(37,211,102,0.3);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 3rem 5%;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+  .footer-logo span { color: var(--orange); }
+
+  .footer-info { color: var(--muted); font-size: 0.85rem; }
+  .footer-info a { color: var(--muted); text-decoration: none; }
+  .footer-info a:hover { color: var(--orange); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* WA FLOATING */
+  .wa-float {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    z-index: 200;
+    width: 60px; height: 60px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+  .wa-float:hover { transform: scale(1.1); }
+  .wa-float svg { width: 30px; height: 30px; fill: #fff; }
+
+  .wa-float-ring {
+    position: absolute;
+    inset: -4px;
+    border: 2px solid rgba(37,211,102,0.3);
+    border-radius: 50%;
+    animation: ring 2.5s infinite;
+  }
+
+  @keyframes ring {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  /* MOBILE */
+  @media (max-width: 1024px) {
+    .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+    .adv-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+
+    .gallery-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 160px 160px 160px;
+    }
+    .gal-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+    .gal-item:nth-child(2) { grid-column: span 1; }
+    .gal-item:nth-child(3) { grid-column: span 1; }
+    .gal-item:nth-child(4) { grid-column: span 1; }
+    .gal-item:nth-child(5) { grid-column: span 1; }
+
+    .catalog-header { flex-direction: column; align-items: flex-start; }
+    .adv-grid { grid-template-columns: repeat(2, 1fr); }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Metall<span>Pro</span></div>
+  <ul class="nav-links">
+    <li><a href="#catalog">Каталог</a></li>
+    <li><a href="#gallery">Продукция</a></li>
+    <li><a href="#advantages">Преимущества</a></li>
+    <li><a href="#contact" class="nav-cta">Получить прайс</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Поставки металлопроката</div>
+    <h1>ЦВЕТНОЙ<br>И <em>ЧЁРНЫЙ</em><br>МЕТАЛЛ</h1>
+    <p class="hero-sub">Оптовые и розничные поставки металлопроката. Медь, алюминий, латунь, сталь — со склада и под заказ. Работаем быстро, доставляем в срок.</p>
+    <div class="hero-actions">
+      <a href="https://wa.me/77070144925?text=Здравствуйте!%20Хочу%20узнать%20стоимость%20металла." class="btn-wa" target="_blank">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Написать в WhatsApp
+      </a>
+      <a href="#catalog" class="btn-outline">Смотреть каталог →</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">500+</div>
+        <div class="stat-label">позиций в наличии</div>
+      </div>
+      <div>
+        <div class="stat-num">10+</div>
+        <div class="stat-label">лет на рынке</div>
+      </div>
+      <div>
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">поддержка клиентов</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATALOG -->
+<section id="catalog">
+  <div class="catalog-header">
+    <div>
+      <div class="section-label">Ассортимент</div>
+      <h2 class="section-title">КАТАЛОГ МЕТАЛЛОВ</h2>
+    </div>
+    <div class="catalog-tabs">
+      <button class="tab-btn active" onclick="filterMetal('all', this)">Все</button>
+      <button class="tab-btn" onclick="filterMetal('color', this)">Цветной</button>
+      <button class="tab-btn" onclick="filterMetal('black', this)">Чёрный</button>
+    </div>
+  </div>
+
+  <div class="catalog-grid" id="catalogGrid">
+    <!-- Цветные -->
+    <div class="metal-card reveal" data-type="color">
+      <div class="metal-icon">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="8" fill="rgba(185,100,20,0.15)"/>
+          <!-- copper wire coil -->
+          <ellipse cx="32" cy="32" rx="18" ry="18" stroke="#B5651D" stroke-width="2.5" fill="none"/>
+          <ellipse cx="32" cy="32" rx="12" ry="12" stroke="#CD853F" stroke-width="2" fill="none"/>
+          <ellipse cx="32" cy="32" rx="6" ry="6" stroke="#B5651D" stroke-width="2" fill="none"/>
+          <circle cx="32" cy="32" r="2.5" fill="#CD853F"/>
+          <!-- copper rod -->
+          <rect x="13" y="29.5" width="38" height="5" rx="2.5" fill="#C87941" opacity="0.5"/>
+          <rect x="13" y="29.5" width="38" height="2" rx="1" fill="#E8A060" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="metal-name">Медь</div>
+      <div class="metal-desc">Прутки, листы, трубы, ленты, проволока. М1, М2. Высокая электропроводность.</div>
+      <span class="metal-tag" style="background:rgba(185,100,20,0.2);color:#cd853f">Цветной металл</span>
+    </div>
+    <div class="metal-card reveal" data-type="color">
+      <div class="metal-icon">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="8" fill="rgba(150,150,160,0.12)"/>
+          <!-- aluminum sheets stack -->
+          <rect x="10" y="14" width="44" height="8" rx="2" fill="#9E9E9E" opacity="0.4"/>
+          <rect x="10" y="14" width="44" height="2.5" rx="1" fill="#E0E0E0" opacity="0.7"/>
+          <rect x="10" y="26" width="44" height="8" rx="2" fill="#9E9E9E" opacity="0.5"/>
+          <rect x="10" y="26" width="44" height="2.5" rx="1" fill="#E0E0E0" opacity="0.7"/>
+          <rect x="10" y="38" width="44" height="8" rx="2" fill="#9E9E9E" opacity="0.6"/>
+          <rect x="10" y="38" width="44" height="2.5" rx="1" fill="#E8E8E8" opacity="0.8"/>
+          <!-- sheen line -->
+          <line x1="10" y1="50" x2="54" y2="50" stroke="#BDBDBD" stroke-width="1.5" stroke-dasharray="4 3"/>
+        </svg>
+      </div>
+      <div class="metal-name">Алюминий</div>
+      <div class="metal-desc">Листы, профиль, трубы, уголок, круг. АД0, АД31, АМГ, Д16Т.</div>
+      <span class="metal-tag" style="background:rgba(150,150,150,0.2);color:#bbb">Цветной металл</span>
+    </div>
+    <div class="metal-card reveal" data-type="color">
+      <div class="metal-icon">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="8" fill="rgba(200,160,10,0.12)"/>
+          <!-- brass rods cross-section circles -->
+          <circle cx="22" cy="24" r="9" fill="#DAA520" opacity="0.35"/>
+          <circle cx="22" cy="24" r="9" stroke="#B8860B" stroke-width="1.5" fill="none"/>
+          <circle cx="22" cy="24" r="4" stroke="#DAA520" stroke-width="1.5" fill="none"/>
+          <circle cx="42" cy="24" r="9" fill="#DAA520" opacity="0.35"/>
+          <circle cx="42" cy="24" r="9" stroke="#B8860B" stroke-width="1.5" fill="none"/>
+          <circle cx="42" cy="24" r="4" stroke="#DAA520" stroke-width="1.5" fill="none"/>
+          <circle cx="32" cy="41" r="9" fill="#DAA520" opacity="0.35"/>
+          <circle cx="32" cy="41" r="9" stroke="#B8860B" stroke-width="1.5" fill="none"/>
+          <circle cx="32" cy="41" r="4" stroke="#DAA520" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="metal-name">Латунь</div>
+      <div class="metal-desc">Листы, прутки, трубки, ленты. Л63, ЛС59. Отличная обрабатываемость.</div>
+      <span class="metal-tag" style="background:rgba(200,160,10,0.2);color:#daa520">Цветной металл</span>
+    </div>
+    <div class="metal-card reveal" data-type="color">
+      <div class="metal-icon">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="8" fill="rgba(140,80,20,0.12)"/>
+          <!-- bronze bushing cross section -->
+          <circle cx="32" cy="32" r="20" fill="#8B5E20" opacity="0.25"/>
+          <circle cx="32" cy="32" r="20" stroke="#A0722A" stroke-width="2.5" fill="none"/>
+          <circle cx="32" cy="32" r="13" stroke="#C8922A" stroke-width="2" fill="none"/>
+          <circle cx="32" cy="32" r="7" stroke="#A0722A" stroke-width="1.5" fill="none"/>
+          <!-- bolt holes -->
+          <circle cx="32" cy="13" r="2.5" fill="#C8922A" opacity="0.7"/>
+          <circle cx="32" cy="51" r="2.5" fill="#C8922A" opacity="0.7"/>
+          <circle cx="13" cy="32" r="2.5" fill="#C8922A" opacity="0.7"/>
+          <circle cx="51" cy="32" r="2.5" fill="#C8922A" opacity="0.7"/>
+        </svg>
+      </div>
+      <div class="metal-name">Бронза</div>
+      <div class="metal-desc">Прутки, втулки, ленты. БрАЖ9-4, БрОЦС. Износостойкость и прочность.</div>
+      <span class="metal-tag" style="background:rgba(160,90,20,0.2);color:#cd853f">Цветной металл</span>
+    </div>
+    <!-- Чёрные -->
+    <div class="metal-card reveal" data-type="black">
+      <div class="metal-icon">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="8" fill="rgba(100,100,120,0.12)"/>
+          <!-- rebar bundle -->
+          <rect x="27" y="8" width="10" height="48" rx="5" fill="#555570" opacity="0.6"/>
+          <rect x="29" y="8" width="6" height="48" rx="3" fill="#7070A0" opacity="0.5"/>
+          <!-- ribs on rebar -->
+          <rect x="26" y="16" width="12" height="2.5" rx="1" fill="#8080A8"/>
+          <rect x="26" y="24" width="12" height="2.5" rx="1" fill="#8080A8"/>
+          <rect x="26" y="32" width="12" height="2.5" rx="1" fill="#8080A8"/>
+          <rect x="26" y="40" width="12" height="2.5" rx="1" fill="#8080A8"/>
+          <rect x="26" y="48" width="12" height="2.5" rx="1" fill="#8080A8"/>
+          <!-- second rebar -->
+          <rect x="40" y="12" width="8" height="40" rx="4" fill="#555570" opacity="0.45"/>
+          <rect x="41" y="20" width="6" height="2" rx="1" fill="#7070A0"/>
+          <rect x="41" y="30" width="6" height="2" rx="1" fill="#7070A0"/>
+          <rect x="41" y="40" width="6" height="2" rx="1" fill="#7070A0"/>
+          <!-- third rebar -->
+          <rect x="16" y="12" width="8" height="40" rx="4" fill="#555570" opacity="0.45"/>
+          <rect x="17" y="20" width="6" height="2" rx="1" fill="#7070A0"/>
+          <rect x="17" y="30" width="6" height="2" rx="1" fill="#7070A0"/>
+          <rect x="17" y="40" width="6" height="2" rx="1" fill="#7070A0"/>
+        </svg>
+      </div>
+      <div class="metal-name">Арматура</div>
+      <div class="metal-desc">Рифлёная и гладкая. Ø6–40мм. Классы А240, А400, А500. ГОСТ.</div>
+      <span class="metal-tag" style="background:rgba(80,80,100,0.2);color:#9090b0">Чёрный металл</span>
+    </div>
+    <div class="metal-card reveal" data-type="black">
+      <div class="metal-icon">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="8" fill="rgba(100,100,120,0.12)"/>
+          <!-- steel angle cross section -->
+          <polygon points="12,52 12,14 18,14 18,46 52,46 52,52" fill="#555570" opacity="0.7"/>
+          <polygon points="12,14 18,14 18,20 12,20" fill="#8080A0" opacity="0.5"/>
+          <polygon points="46,46 52,46 52,52 46,52" fill="#8080A0" opacity="0.5"/>
+          <!-- highlight edge -->
+          <line x1="12" y1="14" x2="12" y2="52" stroke="#9090B0" stroke-width="1.5"/>
+          <line x1="12" y1="52" x2="52" y2="52" stroke="#9090B0" stroke-width="1.5"/>
+          <!-- dimension marks -->
+          <line x1="22" y1="20" x2="22" y2="44" stroke="#6060A0" stroke-width="1" stroke-dasharray="3 3"/>
+          <line x1="22" y1="38" x2="46" y2="38" stroke="#6060A0" stroke-width="1" stroke-dasharray="3 3"/>
+        </svg>
+      </div>
+      <div class="metal-name">Уголок стальной</div>
+      <div class="metal-desc">Равнополочный и неравнополочный. 20×20 – 200×200мм. Ст3, Ст20.</div>
+      <span class="metal-tag" style="background:rgba(80,80,100,0.2);color:#9090b0">Чёрный металл</span>
+    </div>
+    <div class="metal-card reveal" data-type="black">
+      <div class="metal-icon">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="8" fill="rgba(100,100,120,0.12)"/>
+          <!-- pipe cross section perspective -->
+          <ellipse cx="32" cy="20" rx="18" ry="6" fill="#3a3a5a" stroke="#7070A0" stroke-width="1.5"/>
+          <rect x="14" y="20" width="36" height="26" fill="#3a3a5a" opacity="0.6"/>
+          <ellipse cx="32" cy="46" rx="18" ry="6" fill="#4a4a6a" stroke="#7070A0" stroke-width="1.5"/>
+          <ellipse cx="32" cy="46" rx="12" ry="4" fill="#2a2a4a" stroke="#5a5a8a" stroke-width="1"/>
+          <!-- wall thickness highlights -->
+          <line x1="14" y1="20" x2="14" y2="46" stroke="#6060A0" stroke-width="1.5"/>
+          <line x1="50" y1="20" x2="50" y2="46" stroke="#6060A0" stroke-width="1.5"/>
+          <ellipse cx="32" cy="20" rx="12" ry="4" fill="#2a2a4a" stroke="#5a5a8a" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="metal-name">Труба стальная</div>
+      <div class="metal-desc">Круглая, профильная, бесшовная, ВГП. Широкий диапазон сечений.</div>
+      <span class="metal-tag" style="background:rgba(80,80,100,0.2);color:#9090b0">Чёрный металл</span>
+    </div>
+    <div class="metal-card reveal" data-type="black">
+      <div class="metal-icon">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="8" fill="rgba(100,100,120,0.12)"/>
+          <!-- steel sheet stack perspective -->
+          <rect x="10" y="38" width="44" height="8" rx="1" fill="#3a3a5a"/>
+          <rect x="10" y="38" width="44" height="3" rx="1" fill="#6060A0" opacity="0.6"/>
+          <rect x="10" y="28" width="44" height="8" rx="1" fill="#444468"/>
+          <rect x="10" y="28" width="44" height="3" rx="1" fill="#7070A8" opacity="0.6"/>
+          <rect x="10" y="18" width="44" height="8" rx="1" fill="#505075"/>
+          <rect x="10" y="18" width="44" height="3" rx="1" fill="#8080B0" opacity="0.7"/>
+          <!-- edge sheen -->
+          <line x1="54" y1="18" x2="54" y2="46" stroke="#9090C0" stroke-width="1.5"/>
+          <line x1="10" y1="18" x2="10" y2="46" stroke="#6060A0" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="metal-name">Лист стальной</div>
+      <div class="metal-desc">Горячекатаный, холоднокатаный, оцинкованный. Толщина 0.5–60мм.</div>
+      <span class="metal-tag" style="background:rgba(80,80,100,0.2);color:#9090b0">Чёрный металл</span>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-header reveal">
+    <div class="section-label">Фото продукции</div>
+    <h2 class="section-title">НАШИ МЕТАЛЛЫ</h2>
+    <p class="section-desc" style="margin:0 auto">Широкий ассортимент — от цветных металлов до строительного проката</p>
+  </div>
+
+  <div class="gallery-grid">
+    <!-- Медь -->
+    <div class="gal-item reveal">
+      <div class="gal-inner">
+        <div class="metal-visual" style="background:#3a1a05">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&fit=crop" alt="Медь" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        </div>
+        <span class="gal-label">Медные изделия</span>
+      </div>
+    </div>
+
+    <!-- Алюминий -->
+    <div class="gal-item reveal">
+      <div class="gal-inner">
+        <div class="metal-visual" style="background:#2a2a2a">
+          <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=500&q=80&fit=crop" alt="Алюминий" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        </div>
+        <span class="gal-label">Алюминий</span>
+      </div>
+    </div>
+
+    <!-- Латунь и бронза -->
+    <div class="gal-item reveal">
+      <div class="gal-inner">
+        <div class="metal-visual" style="background:#3a2a00">
+          <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=500&q=80&fit=crop" alt="Латунь" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        </div>
+        <span class="gal-label">Латунь и бронза</span>
+      </div>
+    </div>
+
+    <!-- Листовая сталь -->
+    <div class="gal-item reveal">
+      <div class="gal-inner">
+        <div class="metal-visual" style="background:#111122">
+          <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=500&q=80&fit=crop" alt="Листовая сталь" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        </div>
+        <span class="gal-label">Листовая сталь</span>
+      </div>
+    </div>
+
+    <!-- Трубы -->
+    <div class="gal-item reveal">
+      <div class="gal-inner">
+        <div class="metal-visual" style="background:#111">
+          <img src="https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=500&q=80&fit=crop" alt="Трубы" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        </div>
+        <span class="gal-label">Трубы и профиль</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVANTAGES -->
+<section id="advantages">
+  <div class="reveal">
+    <div class="section-label">Почему выбирают нас</div>
+    <h2 class="section-title">НАШИ ПРЕИМУЩЕСТВА</h2>
+  </div>
+  <div class="adv-grid">
+    <div class="adv-card reveal">
+      <svg class="adv-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="18" width="40" height="26" rx="2" stroke="#e8610a" stroke-width="2" fill="none"/>
+        <rect x="14" y="24" width="8" height="12" rx="1" stroke="#e8610a" stroke-width="1.5" fill="none"/>
+        <rect x="26" y="24" width="8" height="12" rx="1" stroke="#e8610a" stroke-width="1.5" fill="none"/>
+        <path d="M4 18L24 6L44 18" stroke="#e8610a" stroke-width="2" stroke-linejoin="round" fill="none"/>
+        <rect x="20" y="36" width="8" height="8" rx="0" fill="rgba(232,97,10,0.2)" stroke="#e8610a" stroke-width="1.5"/>
+      </svg>
+      <div class="adv-title">Большой склад</div>
+      <div class="adv-text">Более 500 позиций в постоянном наличии. Отгрузка в день обращения без ожидания.</div>
+    </div>
+    <div class="adv-card reveal">
+      <svg class="adv-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="10" width="32" height="28" rx="2" stroke="#e8610a" stroke-width="2" fill="none"/>
+        <path d="M8 18H40" stroke="#e8610a" stroke-width="1.5"/>
+        <rect x="14" y="24" width="8" height="8" rx="1" fill="rgba(232,97,10,0.15)" stroke="#e8610a" stroke-width="1.5"/>
+        <path d="M28 24H36M28 30H34" stroke="#e8610a" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M8 10L16 4H40L40 10" stroke="#e8610a" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <div class="adv-title">Опт и розница</div>
+      <div class="adv-text">Работаем с любыми объёмами: от 1 кг до многотонных партий. Гибкие условия.</div>
+    </div>
+    <div class="adv-card reveal">
+      <svg class="adv-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="16" width="28" height="20" rx="2" stroke="#e8610a" stroke-width="2" fill="none"/>
+        <path d="M32 20H40L44 28V36H32V20Z" stroke="#e8610a" stroke-width="2" stroke-linejoin="round" fill="none"/>
+        <circle cx="13" cy="40" r="4" stroke="#e8610a" stroke-width="2" fill="none"/>
+        <circle cx="35" cy="40" r="4" stroke="#e8610a" stroke-width="2" fill="none"/>
+        <path d="M17 40H31" stroke="#e8610a" stroke-width="1.5"/>
+        <path d="M15 24H22" stroke="#e8610a" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="adv-title">Быстрая доставка</div>
+      <div class="adv-text">Собственный и привлечённый транспорт. Доставка по городу и всему региону.</div>
+    </div>
+    <div class="adv-card reveal">
+      <svg class="adv-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="6" width="28" height="36" rx="2" stroke="#e8610a" stroke-width="2" fill="none"/>
+        <path d="M16 16H32M16 22H32M16 28H24" stroke="#e8610a" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="34" cy="34" r="8" fill="#0e0e0e" stroke="#e8610a" stroke-width="2"/>
+        <path d="M30 34L33 37L38 31" stroke="#e8610a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="adv-title">Сертификаты качества</div>
+      <div class="adv-text">Вся продукция сертифицирована. Предоставляем паспорта качества и накладные.</div>
+    </div>
+    <div class="adv-card reveal">
+      <svg class="adv-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="18" stroke="#e8610a" stroke-width="2" fill="none"/>
+        <path d="M24 14V24L30 30" stroke="#e8610a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 8L20 12M32 8L28 12" stroke="#e8610a" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="adv-title">Честные цены</div>
+      <div class="adv-text">Актуальные котировки, прозрачные условия. Скидки постоянным клиентам.</div>
+    </div>
+    <div class="adv-card reveal">
+      <svg class="adv-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 8H38C39.1 8 40 8.9 40 10V30C40 31.1 39.1 32 38 32H26L18 40V32H10C8.9 32 8 31.1 8 30V10C8 8.9 8.9 8 10 8Z" stroke="#e8610a" stroke-width="2" stroke-linejoin="round" fill="none"/>
+        <path d="M16 18H32M16 24H26" stroke="#e8610a" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="36" cy="14" r="5" fill="#0e0e0e" stroke="#e8610a" stroke-width="1.5"/>
+        <path d="M33.5 14L35.5 16L38.5 12" stroke="#e8610a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="adv-title">Ответ за 15 минут</div>
+      <div class="adv-text">Пишите в WhatsApp — менеджер ответит быстро и рассчитает стоимость сразу.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact">
+  <div class="cta-box reveal">
+    <div class="section-label">Связаться с нами</div>
+    <h2 class="cta-title">ПОЛУЧИТЕ <span>ПРАЙС</span><br>ПРЯМО СЕЙЧАС</h2>
+    <p class="cta-sub">Напишите, что нужно — мы рассчитаем стоимость и наличие в течение 15 минут</p>
+    <div class="wa-form">
+      <textarea id="userMsg" placeholder="Опишите что нужно: вид металла, размер, количество..."></textarea>
+      <button class="btn-wa-big" onclick="sendWhatsApp()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Написать в WhatsApp
+      </button>
+    </div>
+    <p style="color:var(--muted);font-size:0.8rem;margin-top:1rem">+7 707 014 4925 · Ответим за 15 минут</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Metall<span>Pro</span></div>
+  <div class="footer-info">
+    <a href="https://wa.me/77070144925" target="_blank">+7 707 014 4925</a><br>
+    © 2024 MetallPro. Все права защищены.
+  </div>
+</footer>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/77070144925?text=Здравствуйте!%20Хочу%20узнать%20цены%20на%20металл." class="wa-float" target="_blank" title="Написать в WhatsApp">
+  <div class="wa-float-ring"></div>
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Catalog filter
+  function filterMetal(type, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.metal-card').forEach(card => {
+      if (type === 'all' || card.dataset.type === type) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // WhatsApp with pre-filled message
+  function sendWhatsApp() {
+    const msg = document.getElementById('userMsg').value.trim();
+    const defaultMsg = 'Здравствуйте! Хочу узнать стоимость металла.';
+    const text = msg ? `Здравствуйте! ${msg}` : defaultMsg;
+    window.open(`https://wa.me/77070144925?text=${encodeURIComponent(text)}`, '_blank');
+  }
+</script>
+</body>
+</html>
