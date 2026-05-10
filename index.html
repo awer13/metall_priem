@@ -166,8 +166,8 @@
 
   h1 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(3.5rem, 8vw, 7rem);
-    line-height: 0.95;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    line-height: 1.0;
     letter-spacing: 2px;
     color: var(--white);
     margin-bottom: 1.5rem;
@@ -375,12 +375,7 @@
   }
 
   .metal-tag {
-    display: inline-block;
-    margin-top: 0.75rem;
-    padding: 3px 10px;
-    border-radius: 100px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    display: none;
   }
 
   /* GALLERY */
@@ -672,21 +667,15 @@
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+    .adv-grid { grid-template-columns: 1fr; }
     .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
-
-    .gallery-grid {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 160px 160px 160px;
-    }
-    .gal-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
-    .gal-item:nth-child(2) { grid-column: span 1; }
-    .gal-item:nth-child(3) { grid-column: span 1; }
-    .gal-item:nth-child(4) { grid-column: span 1; }
-    .gal-item:nth-child(5) { grid-column: span 1; }
-
     .catalog-header { flex-direction: column; align-items: flex-start; }
-    .adv-grid { grid-template-columns: repeat(2, 1fr); }
     footer { flex-direction: column; text-align: center; }
+    .metal-desc { font-size: 0.78rem; }
+    .metal-card { padding: 1.25rem; }
+    .metal-icon { width: 48px; height: 48px; margin-bottom: 0.75rem; }
+    .metal-name { font-size: 0.95rem; }
+    .metal-tag { font-size: 0.62rem; padding: 2px 8px; }
   }
 </style>
 </head>
@@ -697,7 +686,6 @@
   <div class="logo">Metall<span>Pro</span></div>
   <ul class="nav-links">
     <li><a href="#catalog">Что принимаем</a></li>
-    <li><a href="#gallery">Фото</a></li>
     <li><a href="#advantages">Преимущества</a></li>
     <li><a href="#contact" class="nav-cta">Узнать цену</a></li>
   </ul>
@@ -709,7 +697,7 @@
   <div class="hero-grid"></div>
   <div class="hero-content">
     <div class="hero-badge">Приём металлолома</div>
-    <h1>ПРИЁМ<br><em>ЧЁРНОГО</em><br>И ЦВЕТНОГО<br>МЕТАЛЛА</h1>
+    <h1>ПРИЁМ <em>ЧЁРНОГО</em><br>И ЦВЕТНОГО МЕТАЛЛА</h1>
     <p class="hero-sub">Высокие цены • Быстрый расчёт • Самовывоз. Принимаем лом меди, алюминия, стали, латуни. Звоните прямо сейчас!</p>
     <div class="hero-actions">
       <a href="https://wa.me/77070144925?text=Здравствуйте!%20Хочу%20сдать%20металл.%20Подскажите%20цену." class="btn-wa" target="_blank">
@@ -916,67 +904,6 @@
       <div class="metal-name">Лист и обрезки</div>
       <div class="metal-desc">Стальные листы, обрезки, пресс-пакеты, стружка. Взвесим и оплатим сразу.</div>
       <span class="metal-tag" style="background:rgba(80,80,100,0.2);color:#9090b0">Чёрный металл</span>
-    </div>
-  </div>
-</section>
-
-<!-- GALLERY -->
-<section id="gallery">
-  <div class="gallery-header reveal">
-    <div class="section-label">Фото продукции</div>
-    <h2 class="section-title">НАШИ МЕТАЛЛЫ</h2>
-    <p class="section-desc" style="margin:0 auto">Широкий ассортимент — от цветных металлов до строительного проката</p>
-  </div>
-
-  <div class="gallery-grid">
-    <!-- Медь -->
-    <div class="gal-item reveal">
-      <div class="gal-inner">
-        <div class="metal-visual" style="background:#3a1a05">
-          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&fit=crop" alt="Медь" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
-        </div>
-        <span class="gal-label">Медные изделия</span>
-      </div>
-    </div>
-
-    <!-- Алюминий -->
-    <div class="gal-item reveal">
-      <div class="gal-inner">
-        <div class="metal-visual" style="background:#2a2a2a">
-          <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=500&q=80&fit=crop" alt="Алюминий" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
-        </div>
-        <span class="gal-label">Алюминий</span>
-      </div>
-    </div>
-
-    <!-- Латунь и бронза -->
-    <div class="gal-item reveal">
-      <div class="gal-inner">
-        <div class="metal-visual" style="background:#3a2a00">
-          <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=500&q=80&fit=crop" alt="Латунь" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
-        </div>
-        <span class="gal-label">Латунь и бронза</span>
-      </div>
-    </div>
-
-    <!-- Листовая сталь -->
-    <div class="gal-item reveal">
-      <div class="gal-inner">
-        <div class="metal-visual" style="background:#111122">
-          <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=500&q=80&fit=crop" alt="Листовая сталь" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
-        </div>
-        <span class="gal-label">Листовая сталь</span>
-      </div>
-    </div>
-
-    <!-- Трубы -->
-    <div class="gal-item reveal">
-      <div class="gal-inner">
-        <div class="metal-visual" style="background:#111">
-          <img src="https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=500&q=80&fit=crop" alt="Трубы" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
-        </div>
-        <span class="gal-label">Трубы и профиль</span>
-      </div>
     </div>
   </div>
 </section>
